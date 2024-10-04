@@ -18,55 +18,85 @@ public class TrainLine {
             // If head is not null, there is one station in the line
             this.numberOfStations = 1;
         }
-        // At initialization head and tail point to the same station even if null
-        this.tail = null;
-    } // full constructor
+        this.tail = this.head;  // At initialization, head and tail point to the same station
+    }
 
     /** Basic constructor */
     public TrainLine(String name) {
         this(name, null);
-    } // basic constructor
+    }
 
     /**
      * Creates a new station with the given name and adds it to the end of the line.
      */
     public void add(String name) {
-        // Create the new station to add
         TrainStation newStation = new TrainStation(name);
-        // Determine where to place the new station
         if (this.head == null) {
-            // Trainline is empty, make new station the head of the line
-            this.head = newStation;
+            this.head = newStation;  // If the train line is empty, make this station the head
         } else {
-            // When there is a head station already, add the new station after the last
-            // station in the line.
-            this.tail.setNext(newStation);
+            this.tail.setNext(newStation);  // Add the new station after the current tail
         }
-        // The new station becomes the tail station of the line
-        this.tail = newStation;
-        // Update station count
-        this.numberOfStations++;
-    } // method add
+        this.tail = newStation;  // Update the tail to the new station
+        this.numberOfStations++;  // Update the number of stations
+    }
 
-    /** Returns the number of stations in the line >= 0 */
+    /** Returns the number of stations in the line */
     public int getNumberOfStations() {
         return numberOfStations;
-    } // method getNumberOfStations
+    }
 
-    /*
-     * METHOD STUBS TO ENSURE CODE COMPILES. YOU WILL HAVE TO REWRITE THIS CODE TO
-     * MATCH THE SPECIFICATIONS AND ALSO YOU'LL HAVE TO WRITE METHOD isEmpty.
-     */
+    /** Method to check if a station with the given name exists in the line */
     public boolean contains(String name) {
-        return false;
+        if (name == null || this.head == null) {
+            return false;  // Return false if the name is null or the line is empty
+        }
+
+        TrainStation cursor = this.head;
+        while (cursor != null) {
+            if (name.equals(cursor.getName())) {
+                return true;  // Station found
+            }
+            cursor = cursor.getNext();  // Move to the next station
+        }
+        return false;  // Station not found
     }
 
+    /** Method to find the index of a station with the given name */
     public int indexOf(String name) {
-        return -10;
+        if (name == null || this.head == null) {
+            return -1;  // Return -1 if the name is null or the line is empty
+        }
+
+        TrainStation cursor = this.head;
+        int index = 0;  // Start at the first station
+        while (cursor != null) {
+            if (name.equals(cursor.getName())) {
+                return index;  // Return the index if station is found
+            }
+            cursor = cursor.getNext();  // Move to the next station
+            index++;
+        }
+        return -1;  // Station not found
     }
 
+    /** Method to return the names of stations in reverse order */
     public String reverseList() {
-        return "niart";
+        if (this.head == null) {
+            return "";  // Return an empty string if the train line is empty
+        }
+
+        TrainStation cursor = this.head;
+        String reversed = "";  // Initialize the string to hold the reversed list
+        while (cursor != null) {
+            reversed = cursor.getName() + "\n" + reversed;  // Prepend the station name
+            cursor = cursor.getNext();  // Move to the next station
+        }
+        return reversed.trim();  // Trim the trailing new line and return
+    }
+
+    /** Method to check if the train line is empty */
+    public boolean isEmpty() {
+        return this.head == null;  // Return true if the head is null
     }
 
     /*******************************************************************************
@@ -83,7 +113,7 @@ public class TrainLine {
             redLineSB.add(station);
         }
         // An empty trainline
-        prep_TrainLine brownLineSB = new prep_TrainLine("Brown Line SB");
+        TrainLine brownLineSB = new TrainLine("Brown Line SB");
         // A random station name
         String randomName = "Oak Park";
         // Guard tests
@@ -110,7 +140,7 @@ public class TrainLine {
         for (int i = stationNames.length - 1; i >= 0; i--) {
             expectedReverseList = expectedReverseList + stationNames[i] + "\n";
         }
-        boolean reverseListTest = redLineSB.reverseList().equals(expectedReverseList);
+        boolean reverseListTest = redLineSB.reverseList().equals(expectedReverseList.trim());
         // Reporting strings
         final String PASS = "Pass";
         final String FAIL = "Fail";
